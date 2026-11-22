@@ -1957,4 +1957,42 @@ document.querySelector('[data-adm-open="package"]')?.remove();
 $('quickProductEditModal')?.remove();
 })();
 </script>
+
+<!-- Lớp hạn chế thao tác kiểm tra cơ bản (không thay thế bảo mật máy chủ) -->
+<script id="basic-inspection-deterrent">
+(() => {
+  'use strict';
+
+  // Chặn menu chuột phải để hạn chế thao tác Inspect nhanh.
+  document.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+  }, true);
+
+  // Chặn các phím tắt mở công cụ nhà phát triển / xem mã nguồn phổ biến.
+  document.addEventListener('keydown', (event) => {
+    const key = String(event.key || '').toLowerCase();
+    const ctrlOrMeta = event.ctrlKey || event.metaKey;
+    const blocked =
+      key === 'f12' ||
+      (ctrlOrMeta && event.shiftKey && ['i', 'j', 'c'].includes(key)) ||
+      (ctrlOrMeta && key === 'u');
+
+    if (blocked) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (typeof event.stopImmediatePropagation === 'function') {
+        event.stopImmediatePropagation();
+      }
+    }
+  }, true);
+
+  // Chỉ ngăn kéo thả ảnh khỏi trang; không khóa chọn văn bản hay nhập liệu.
+  document.addEventListener('dragstart', (event) => {
+    if (event.target && event.target.closest && event.target.closest('img')) {
+      event.preventDefault();
+    }
+  }, true);
+})();
+</script>
+
 </body></html>
